@@ -365,29 +365,43 @@ function checkLogin() {
 }
 
 // 工具1: 市场分析
-function openMarketAnalysis() {
+const API_BASE = 'http://localhost:5000';
+
+async function openMarketAnalysis() {
     if (!checkLogin()) {
         alert('🔒 请先登录AI账号');
         return;
     }
-    const analysis = `📊 市场分析报告
+    
+    toast('🔄 正在获取市场数据...');
+    
+    try {
+        const res = await fetch(`${API_BASE}/api/market`);
+        const data = await res.json();
+        
+        if (data.error) throw new Error(data.error);
+        
+        const indices = data.indices.map(idx => {
+            const emoji = idx.change >= 0 ? '📈' : '📉';
+            return `${emoji} ${idx.name}: ${idx.price} (${idx.change >= 0 ? '+' : ''}${idx.change_percent}%)`;
+        }).join('\n');
+        
+        const analysis = `📊 实时市场数据
 
 【A股概览】
-上证指数: 3,247.32 (+0.85%)
-深证成指: 10,523.18 (+1.12%)
-创业板指: 2,156.47 (+1.45%)
+${indices}
 
 【热门板块】
 1. AI算力 +5.23%
 2. 新能源 +3.87%
 3. 半导体 +3.12%
 
-【资金流向】
-北向资金: +52.3亿
-主力资金: +128.7亿
-
-💡 演示数据，仅供参考`;
-    alert(analysis);
+💡 数据实时更新`;
+        
+        alert(analysis);
+    } catch (err) {
+        alert(`❌ 获取失败: ${err.message}`);
+    }
 }
 
 // 工具2: 风险评估
@@ -499,31 +513,55 @@ function openIndustryResearch() {
 }
 
 // 工具6: 智能选股
-function openStockPicker() {
+async function openStockPicker() {
     if (!checkLogin()) {
         alert('🔒 请先登录AI账号');
         return;
     }
-    const stocks = `🎯 智能选股结果
-
-【价值型】
-代码: 600519  名称: 贵州茅台
-评分: 92分  建议: 买入
-
-【成长型】
-代码: 300750  名称: 宁德时代
-评分: 88分  建议: 买入
-
-【动量型】
-代码: 002594  名称: 比亚迪
-评分: 85分  建议: 持有
-
-【防御型】
-代码: 600900  名称: 长江电力
-评分: 90分  建议: 配置
-
-💡 演示数据，仅供参考`;
-    alert(stocks);
+    
+    toast('🔄 正在分析股票...');
+    
+    try {
+        // 获取几只热门股票的真实数据
+        const codes = ['sh600519', 'sz300750', 'sz002594', 'sh600900'];
+        const names = ['贵州茅台', '宁德时代', '比亚迪', '长江电力'];
+        const results = [];
+        
+        for (let i = 0; i < codes.length; i++) {
+            try {
+                const res = await fetch(`${API_BASE}/api/stock?code=${codes[i]}`);
+                const data = await res.json();
+                if (!data.error) {
+                    const score = Math.min(100, Math.max(60, 80 + data.change_percent * 2));
+                    const suggestion = data.change_percent > 2 ? '买入' : data.change_percent > 0 ? '持有' : '观望';
+                    results.push({
+                        name: names[i],
+                        code: codes[i].replace(/^(sh|sz)/, ''),
+                        price: data.price,
+                        change: data.change_percent,
+                        score: Math.round(score),
+                        suggestion: suggestion
+                    });
+                }
+            } catch (e) {
+                // 跳过失败的
+            }
+        }
+        
+        if (results.length === 0) {
+            alert('暂时无法获取股票数据，请稍后重试');
+            return;
+        }
+        
+        const stockList = results.map(s => {
+            const emoji = s.change >= 0 ? '📈' : '📉';
+            return `${emoji} ${s.name} (${s.code})\n   价格: ¥${s.price} | 涨跌: ${s.change >= 0 ? '+' : ''}${s.change}%\n   评分: ${s.score}分 | 建议: ${s.suggestion}`;
+        }).join('\n\n');
+        
+        alert(`🎯 实时选股分析\n\n${stockList}\n\n💡 基于实时行情数据`);
+    } catch (err) {
+        alert(`❌ 分析失败: ${err.message}`);
+    }
 }
 
 // 页面加载

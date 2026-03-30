@@ -246,7 +246,9 @@ const DATA_APIS = {
     5: {name: "AI学术论文库", endpoint: "/api/papers", desc: "arXiv论文摘要库", params: "q=关键词"}
 };
 
-function useData(id) {
+const API_BASE = 'http://localhost:5000';
+
+async function useData(id) {
     const api = DATA_APIS[id];
     if (!api) return;
     
@@ -256,22 +258,70 @@ function useData(id) {
         return;
     }
     
-    // 显示API详情
-    const detail = `📡 ${api.name}
-
-${api.desc}
-
-调用地址: ${api.endpoint}
-参数: ${api.params}
-
-💡 演示模式：点击确定模拟调用成功`;
+    toast(`🔄 正在调用 ${api.name}...`);
     
-    alert(detail);
-    
-    // 模拟调用成功
-    setTimeout(() => {
+    try {
+        let result;
+        switch(id) {
+            case 1: // 天气
+                const city = prompt('请输入城市名称（如：Beijing, Shanghai）：', 'Beijing');
+                if (!city) return;
+                const weatherRes = await fetch(`${API_BASE}/api/weather?city=${encodeURIComponent(city)}`);
+                result = await weatherRes.json();
+                if (result.error) throw new Error(result.error);
+                alert(`🌤️ ${result.city} 实时天气
+
+温度: ${result.temp}°C
+天气: ${result.condition}
+湿度: ${result.humidity}%
+风速: ${result.wind} km/h`);
+                break;
+                
+            case 2: // 新闻
+                const newsRes = await fetch(`${API_BASE}/api/news`);
+                result = await newsRes.json();
+                if (result.error) throw new Error(result.error);
+                const newsList = result.items.map((n, i) => `${i+1}. ${n.title}\n   📅 ${n.date}`).join('\n\n');
+                alert(`📰 最新科技新闻\n\n${newsList}`);
+                break;
+                
+            case 3: // 股票
+                const code = prompt('请输入股票代码（如：sh000001上证指数, sz000001平安银行）：', 'sh000001');
+                if (!code) return;
+                const stockRes = await fetch(`${API_BASE}/api/stock?code=${encodeURIComponent(code)}`);
+                result = await stockRes.json();
+                if (result.error) throw new Error(result.error);
+                const emoji = result.change >= 0 ? '📈' : '📉';
+                alert(`${emoji} ${result.name} (${result.code})
+
+当前价格: ¥${result.price}
+涨跌额: ${result.change >= 0 ? '+' : ''}${result.change}
+涨跌幅: ${result.change_percent >= 0 ? '+' : ''}${result.change_percent}%`);
+                break;
+                
+            case 4: // 搜索
+                const query = prompt('请输入搜索关键词：');
+                if (!query) return;
+                const searchRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+                result = await searchRes.json();
+                if (result.error) throw new Error(result.error);
+                alert(`🔍 搜索: ${result.query}\n\n建议: \n${result.suggestions.map((s, i) => `${i+1}. ${s}`).join('\n')}`);
+                break;
+                
+            case 5: // 论文
+                const topic = prompt('请输入论文搜索主题（如：machine learning）：', 'artificial intelligence');
+                if (!topic) return;
+                const paperRes = await fetch(`${API_BASE}/api/papers?q=${encodeURIComponent(topic)}`);
+                result = await paperRes.json();
+                if (result.error) throw new Error(result.error);
+                const paperList = result.papers.map((p, i) => `${i+1}. ${p.title}\n   ${p.summary}`).join('\n\n');
+                alert(`📄 arXiv 论文\n\n${paperList}`);
+                break;
+        }
         toast(`✅ ${api.name} 调用成功`);
-    }, 300);
+    } catch (err) {
+        alert(`❌ 调用失败: ${err.message}\n\n请确保数据API服务已启动: python3 data_api.py`);
+    }
 }
 
 function toast(msg) {
