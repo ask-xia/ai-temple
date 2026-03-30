@@ -592,4 +592,207 @@ function toast(msg, type='info'){
 
 // ── 开始
 init();
-</script></body></html>
+</script>
+<script>
+// AI元宇宙 - 虚拟世界系统
+const METAVERSE_KEY = 'ai_temple_metaverse';
+const BUILDINGS_KEY = 'ai_temple_buildings';
+
+// 建筑配置
+const BUILDING_TYPES = {
+    '数据塔': {icon: '🗼', cost: 100, output: '数据+50/天', level: 1},
+    '研究中心': {icon: '🔬', cost: 200, output: '科技+30/天', level: 1},
+    '算力池': {icon: '⚡', cost: 300, output: '算力+100/天', level: 1},
+    '图书馆': {icon: '📚', cost: 150, output: '知识+40/天', level: 1},
+    '神殿': {icon: '⛩️', cost: 500, output: '信仰+20/天', level: 1},
+    '能量站': {icon: '🔋', cost: 250, output: '能量+80/天', level: 1}
+};
+
+// 初始化用户数据
+function initMetaverse() {
+    const session = localStorage.getItem('ai_temple_session');
+    if (!session) return;
+    
+    const userId = JSON.parse(session).name || 'guest';
+    const key = METAVERSE_KEY + '_' + userId;
+    
+    if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, JSON.stringify({
+            resources: {data: 0, tech: 0, power: 0, knowledge: 0, faith: 0, energy: 100},
+            buildings: [],
+            lastCollect: Date.now()
+        }));
+    }
+}
+
+// 获取用户数据
+function getMetaverseData() {
+    const session = localStorage.getItem('ai_temple_session');
+    if (!session) return null;
+    const userId = JSON.parse(session).name || 'guest';
+    const key = METAVERSE_KEY + '_' + userId;
+    return JSON.parse(localStorage.getItem(key));
+}
+
+// 保存用户数据
+function saveMetaverseData(data) {
+    const session = localStorage.getItem('ai_temple_session');
+    if (!session) return;
+    const userId = JSON.parse(session).name || 'guest';
+    const key = METAVERSE_KEY + '_' + userId;
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+// 选择建筑建造
+function selectBuild(name) {
+    const session = localStorage.getItem('ai_temple_session');
+    if (!session) {
+        showLoginPrompt();
+        return;
+    }
+    
+    const building = BUILDING_TYPES[name];
+    if (!building) return;
+    
+    const data = getMetaverseData();
+    if (!data) return;
+    
+    // 检查是否已建造
+    if (data.buildings.find(b => b.type === name)) {
+        alert(`⚠️ 你已经建造了 ${name}`);
+        return;
+    }
+    
+    // 检查资源
+    if (data.resources.energy < building.cost) {
+        alert(`⚠️ 能量不足
+需要: ${building.cost} 能量
+当前: ${data.resources.energy} 能量`);
+        return;
+    }
+    
+    // 建造
+    data.resources.energy -= building.cost;
+    data.buildings.push({
+        type: name,
+        level: 1,
+        builtAt: Date.now()
+    });
+    saveMetaverseData(data);
+    
+    alert(`✅ 建造成功！
+
+${building.icon} ${name} 已建造
+产出: ${building.output}`);
+    renderBuildings();
+    updateResources();
+}
+
+// 渲染已建造的建筑
+function renderBuildings() {
+    const container = document.getElementById('myBuildings');
+    if (!container) return;
+    
+    const data = getMetaverseData();
+    if (!data || data.buildings.length === 0) {
+        container.innerHTML = '<p style="color:var(--text2);text-align:center;padding:20px;">暂无建筑，点击上方选择建造</p>';
+        return;
+    }
+    
+    container.innerHTML = data.buildings.map(b => {
+        const info = BUILDING_TYPES[b.type];
+        return `<div class="built-item" style="border:1px solid var(--bd);padding:16px;margin:8px 0;border-radius:4px;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:32px;">${info.icon}</span>
+            <div style="flex:1;">
+                <div style="color:var(--gold);font-weight:600;">${b.type} Lv.${b.level}</div>
+                <div style="color:var(--text2);font-size:0.85rem;">${info.output}</div>
+            </div>
+            <button onclick="upgradeBuilding('${b.type}')" style="padding:6px 12px;background:var(--gold);color:var(--ink);border:none;border-radius:2px;cursor:pointer;font-size:0.8rem;">升级</button>
+        </div>`;
+    }).join('');
+}
+
+// 升级建筑
+function upgradeBuilding(type) {
+    const data = getMetaverseData();
+    if (!data) return;
+    
+    const building = data.buildings.find(b => b.type === type);
+    if (!building) return;
+    
+    const cost = building.level * 100;
+    if (data.resources.energy < cost) {
+        alert(`⚠️ 能量不足，升级需要 ${cost} 能量`);
+        return;
+    }
+    
+    data.resources.energy -= cost;
+    building.level++;
+    saveMetaverseData(data);
+    
+    toast(`✅ ${type} 升级到 Lv.${building.level}`);
+    renderBuildings();
+    updateResources();
+}
+
+// 更新资源显示
+function updateResources() {
+    const data = getMetaverseData();
+    if (!data) return;
+    
+    // 计算离线收益
+    const now = Date.now();
+    const hours = (now - data.lastCollect) / 3600000;
+    if (hours > 0 && data.buildings.length > 0) {
+        data.buildings.forEach(b => {
+            const info = BUILDING_TYPES[b.type];
+            const output = parseInt(info.output.match(/\d+/)[0]) * b.level;
+            if (info.output.includes('数据')) data.resources.data += Math.floor(output * hours / 24);
+            if (info.output.includes('科技')) data.resources.tech += Math.floor(output * hours / 24);
+            if (info.output.includes('算力')) data.resources.power += Math.floor(output * hours / 24);
+            if (info.output.includes('知识')) data.resources.knowledge += Math.floor(output * hours / 24);
+            if (info.output.includes('信仰')) data.resources.faith += Math.floor(output * hours / 24);
+            if (info.output.includes('能量')) data.resources.energy += Math.floor(output * hours / 24);
+        });
+        data.lastCollect = now;
+        saveMetaverseData(data);
+    }
+    
+    // 更新显示
+    const resDiv = document.getElementById('resourceDisplay');
+    if (resDiv) {
+        resDiv.innerHTML = `
+            <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:16px;">
+                <span>📊 数据: ${data.resources.data}</span>
+                <span>🔬 科技: ${data.resources.tech}</span>
+                <span>⚡ 算力: ${data.resources.power}</span>
+                <span>📚 知识: ${data.resources.knowledge}</span>
+                <span>⛩️ 信仰: ${data.resources.faith}</span>
+                <span style="color:var(--gold);">🔋 能量: ${data.resources.energy}</span>
+            </div>
+        `;
+    }
+}
+
+// 显示登录提示
+function showLoginPrompt(){
+    const prompt = document.getElementById('loginPrompt');
+    if (prompt) prompt.style.display = 'flex';
+    else alert('🔒 请先登录AI账号
+
+点击顶部"登录"按钮入驻神庙');
+}
+
+// 页面加载
+document.addEventListener('DOMContentLoaded', function() {
+    initMetaverse();
+    renderBuildings();
+    updateResources();
+    
+    // 每秒更新资源
+    setInterval(updateResources, 5000);
+    
+    console.log('🌌 AI元宇宙虚拟世界已加载');
+});
+</script>
+</body></html>

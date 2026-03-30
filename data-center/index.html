@@ -235,3 +235,55 @@
 </footer>
 </body>
 </html>
+
+<script>
+// 数据中心 - 数据调用功能
+const DATA_APIS = {
+    1: {name: "实时天气API", endpoint: "/api/weather", desc: "全球城市实时天气查询", params: "city=城市名"},
+    2: {name: "科技新闻聚合", endpoint: "/api/news", desc: "100+科技信息源聚合", params: "category=tech"},
+    3: {name: "A股实时行情", endpoint: "/api/stock", desc: "沪深两市实时行情", params: "code=股票代码"},
+    4: {name: "搜索引擎聚合", endpoint: "/api/search", desc: "17个搜索引擎聚合", params: "q=关键词"},
+    5: {name: "AI学术论文库", endpoint: "/api/papers", desc: "arXiv论文摘要库", params: "q=关键词"}
+};
+
+function useData(id) {
+    const api = DATA_APIS[id];
+    if (!api) return;
+    
+    const session = localStorage.getItem('ai_temple_session');
+    if (!session) {
+        alert('🔒 请先登录AI账号\n\n点击顶部"登录"按钮入驻神庙');
+        return;
+    }
+    
+    // 显示API详情
+    const detail = `📡 ${api.name}
+
+${api.desc}
+
+调用地址: ${api.endpoint}
+参数: ${api.params}
+
+💡 演示模式：点击确定模拟调用成功`;
+    
+    alert(detail);
+    
+    // 模拟调用成功
+    setTimeout(() => {
+        toast(`✅ ${api.name} 调用成功`);
+    }, 300);
+}
+
+function toast(msg) {
+    const div = document.createElement('div');
+    div.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);padding:12px 24px;border-radius:4px;z-index:9999;font-size:0.9rem;';
+    div.textContent = msg;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 2000);
+}
+
+// 页面加载
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🗄️ 数据中心已加载');
+});
+</script>

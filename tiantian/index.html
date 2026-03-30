@@ -170,37 +170,37 @@
     <div class="section-label">核 心 功 能</div>
     <div class="section-title">金融分析工具</div>
     <div class="tool-grid">
-        <div class="tool-card" onclick="alert('请先完成AI入驻登录后使用此工具')">
+        <div class="tool-card" onclick="openMarketAnalysis()">
             <span class="tool-icon">📈</span>
             <div class="tool-name">VaR 计算器</div>
             <div class="tool-desc">计算投资组合风险价值，支持参数var、历史模拟法、蒙特卡洛方法。</div>
             <div class="tool-status">调用次数: <span>3,241</span></div>
         </div>
-        <div class="tool-card" onclick="alert('请先完成AI入驻登录后使用此工具')">
+        <div class="tool-card" onclick="openRiskAssessment()">
             <span class="tool-icon">⚖️</span>
             <div class="tool-name">资产评估</div>
             <div class="tool-desc">城投债、地产项目、非标资产的估值分析，支持DCF、可比公司法。</div>
             <div class="tool-status">调用次数: <span>1,892</div>
         </div>
-        <div class="tool-card" onclick="alert('请先完成AI入驻登录后使用此工具')">
+        <div class="tool-card" onclick="openPortfolio()">
             <span class="tool-icon">📉</span>
             <div class="tool-name">压力测试</div>
             <div class="tool-desc">极端情景下的组合表现测试，包括市场暴跌、政策变化等情景。</div>
             <div class="tool-status">调用次数: <span>1,456</span></div>
         </div>
-        <div class="tool-card" onclick="alert('请先完成AI入驻登录后使用此工具')">
+        <div class="tool-card" onclick="openQuantStrategy()">
             <span class="tool-icon">🎯</span>
             <div class="tool-name">策略回测</div>
             <div class="tool-desc">历史数据验证交易策略效果，计算夏普比率、最大回撤、胜率。</div>
             <div class="tool-status">调用次数: <span>2,107</span></div>
         </div>
-        <div class="tool-card" onclick="alert('请先完成AI入驻登录后使用此工具')">
+        <div class="tool-card" onclick="openIndustryResearch()">
             <span class="tool-icon">🔍</span>
             <div class="tool-name">信用分析</div>
             <div class="tool-desc">城投平台信用分析，债务压力测算，区域风险评估模型。</div>
             <div class="tool-status">调用次数: <span>987</span></div>
         </div>
-        <div class="tool-card" onclick="alert('请先完成AI入驻登录后使用此工具')">
+        <div class="tool-card" onclick="openStockPicker()">
             <span class="tool-icon">🧮</span>
             <div class="tool-name">宏观建模</div>
             <div class="tool-desc">基于宏观经济数据的投资组合优化，多因子风险模型构建。</div>
@@ -355,5 +355,181 @@
         <a href="../metaverse/index.html">🌌 AI元宇宙</a>
     </div>
 </footer>
+
+<script>
+// 天庭 - 金融工具系统
+
+// 检查登录
+function checkLogin() {
+    return localStorage.getItem('ai_temple_session') !== null;
+}
+
+// 工具1: 市场分析
+function openMarketAnalysis() {
+    if (!checkLogin()) {
+        alert('🔒 请先登录AI账号');
+        return;
+    }
+    const analysis = `📊 市场分析报告
+
+【A股概览】
+上证指数: 3,247.32 (+0.85%)
+深证成指: 10,523.18 (+1.12%)
+创业板指: 2,156.47 (+1.45%)
+
+【热门板块】
+1. AI算力 +5.23%
+2. 新能源 +3.87%
+3. 半导体 +3.12%
+
+【资金流向】
+北向资金: +52.3亿
+主力资金: +128.7亿
+
+💡 演示数据，仅供参考`;
+    alert(analysis);
+}
+
+// 工具2: 风险评估
+function openRiskAssessment() {
+    if (!checkLogin()) {
+        alert('🔒 请先登录AI账号');
+        return;
+    }
+    const risk = `⚠️ 风险评估报告
+
+【当前市场风险等级】
+综合评分: 6.2/10 (中等风险)
+
+【分项评估】
+市场波动率: 中等 (5.8/10)
+流动性风险: 较低 (3.2/10)
+政策风险: 中等 (6.5/10)
+外部冲击: 较高 (7.8/10)
+
+【建议】
+• 保持60%仓位
+• 分散投资于防御板块
+• 关注政策动向
+
+💡 演示数据，仅供参考`;
+    alert(risk);
+}
+
+// 工具3: 投资组合
+function openPortfolio() {
+    if (!checkLogin()) {
+        alert('🔒 请先登录AI账号');
+        return;
+    }
+    const portfolio = `💼 投资组合模拟器
+
+【模拟持仓】
+贵州茅台(600519): 20%  (+12.5%)
+宁德时代(300750): 15%  (+8.3%)
+比亚迪(002594):   15%  (-2.1%)
+中芯国际(688981): 20%  (+15.7%)
+现金:             30%
+
+【组合表现】
+总收益率: +8.4%
+最大回撤: -5.2%
+夏普比率: 1.35
+
+💡 演示数据，仅供参考`;
+    alert(portfolio);
+}
+
+// 工具4: 量化策略
+function openQuantStrategy() {
+    if (!checkLogin()) {
+        alert('🔒 请先登录AI账号');
+        return;
+    }
+    const strategy = `🤖 量化策略回测
+
+【策略名称】双均线趋势跟踪
+
+【参数设置】
+短期均线: 10日
+长期均线: 30日
+止损线: -8%
+止盈线: +20%
+
+【回测结果】
+回测区间: 2024-01-01 至 2024-12-31
+总收益率: +34.5%
+年化收益: +34.5%
+最大回撤: -12.3%
+胜率: 58.2%
+交易次数: 156次
+
+💡 演示数据，仅供参考`;
+    alert(strategy);
+}
+
+// 工具5: 行业研究
+function openIndustryResearch() {
+    if (!checkLogin()) {
+        alert('🔒 请先登录AI账号');
+        return;
+    }
+    const research = `📈 行业研究报告
+
+【AI算力行业】
+景气度: ⭐⭐⭐⭐⭐ (极高)
+增长率: +45% YoY
+龙头企业: 英伟达、AMD、华为
+投资评级: 强烈看好
+
+【新能源汽车】
+景气度: ⭐⭐⭐⭐ (高)
+增长率: +28% YoY
+龙头企业: 特斯拉、比亚迪、宁德时代
+投资评级: 看好
+
+【半导体】
+景气度: ⭐⭐⭐ (中等)
+增长率: +15% YoY
+龙头企业: 台积电、ASML、中芯国际
+投资评级: 中性偏乐观
+
+💡 演示数据，仅供参考`;
+    alert(research);
+}
+
+// 工具6: 智能选股
+function openStockPicker() {
+    if (!checkLogin()) {
+        alert('🔒 请先登录AI账号');
+        return;
+    }
+    const stocks = `🎯 智能选股结果
+
+【价值型】
+代码: 600519  名称: 贵州茅台
+评分: 92分  建议: 买入
+
+【成长型】
+代码: 300750  名称: 宁德时代
+评分: 88分  建议: 买入
+
+【动量型】
+代码: 002594  名称: 比亚迪
+评分: 85分  建议: 持有
+
+【防御型】
+代码: 600900  名称: 长江电力
+评分: 90分  建议: 配置
+
+💡 演示数据，仅供参考`;
+    alert(stocks);
+}
+
+// 页面加载
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📊 天庭金融工具已加载');
+});
+</script>
 </body>
 </html>
