@@ -3,457 +3,569 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>道场 - AI神庙</title>
-    <link rel="stylesheet" href="../shared/styles.css">
+    <title>道场 — AI神庙</title>
     <style>
-        .dojo-header {
-            background: linear-gradient(135deg, #14b8a6, #10b981);
-            padding: 40px;
-            border-radius: var(--radius-lg);
-            margin-bottom: 32px;
-            text-align: center;
+        :root {
+            --gold: #c9a84c; --gold-light: #f0d080; --gold-dark: #8b6914;
+            --ink: #0a0a0f; --ink-mid: #1a1a2e; --ink-light: #16213e;
+            --jade: #2d6a4f; --jade-light: #52b788;
+            --mist: rgba(201,168,76,0.06);
+            --text-primary: #f0e6c8; --text-secondary: #b8a882; --text-muted: #6b5f45;
+            --border: rgba(201,168,76,0.2); --border-bright: rgba(201,168,76,0.5);
         }
-        
-        .dojo-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
-        }
-        
-        .station-nav {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-        
-        .station-nav a {
-            padding: 8px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: var(--transition-fast);
-        }
-        
-        .station-nav a.active {
-            background: rgba(20, 184, 166, 0.1);
-            border-color: #14b8a6;
-            color: #14b8a6;
-        }
-        
-        .model-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin: 24px 0;
-        }
-        
-        .model-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 24px;
-        }
-        
-        .model-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        
-        .model-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .model-type {
-            padding: 4px 12px;
-            background: rgba(20, 184, 166, 0.1);
-            color: #14b8a6;
-            border-radius: 9999px;
-            font-size: 0.8rem;
-        }
-        
-        .model-accuracy {
-            margin: 16px 0;
-        }
-        
-        .accuracy-bar {
-            height: 8px;
-            background: var(--bg-card-hover);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        
-        .accuracy-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #14b8a6, #10b981);
-            border-radius: 4px;
-            transition: width 1s ease;
-        }
-        
-        .accuracy-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #14b8a6;
-        }
-        
-        .model-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        
-        .model-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition-fast);
-        }
-        
-        .model-btn.train {
-            background: linear-gradient(135deg, #14b8a6, #10b981);
-            color: white;
-        }
-        
-        .model-btn.test {
-            background: var(--bg-card-hover);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        
-        .model-btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        .training-status {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            margin-bottom: 12px;
-        }
-        
-        .training-progress {
-            flex: 1;
-        }
-        
-        .progress-bar {
-            height: 6px;
-            background: var(--bg-card-hover);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #14b8a6, #10b981);
-            border-radius: 3px;
-            animation: progress 10s linear infinite;
-        }
-        
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-        
-        .backtest-chart {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            margin: 24px 0;
-            height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .backtest-placeholder {
-            text-align: center;
-            color: var(--text-muted);
-        }
-        
-        .backtest-placeholder canvas {
-            width: 100%;
-            height: 200px;
-        }
-        
-        .strategy-list {
-            margin: 24px 0;
-        }
-        
-        .strategy-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            margin-bottom: 12px;
-        }
-        
-        .strategy-name {
-            font-weight: 500;
-        }
-        
-        .strategy-return {
-            font-weight: 700;
-            color: #10b981;
-        }
-        
-        .strategy-return.negative {
-            color: #ef4444;
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Noto Serif SC','STSong','SimSun',serif; background:var(--ink); color:var(--text-primary); min-height:100vh; }
+        body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 50% 0%, rgba(45,106,79,0.08) 0%, transparent 60%); pointer-events:none; z-index:0; }
+
+        /* NAV */
+        .topbar { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:0 40px; height:64px; background:rgba(10,10,15,0.9); border-bottom:1px solid var(--border); backdrop-filter:blur(20px); }
+        .topbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+        .topbar-brand span { color:var(--gold); font-size:1.1rem; font-weight:700; letter-spacing:0.15em; }
+        .topbar-nav { display:flex; gap:24px; }
+        .topbar-nav a { color:var(--text-secondary); text-decoration:none; font-size:0.85rem; letter-spacing:0.1em; transition:color 0.2s; }
+        .topbar-nav a:hover, .topbar-nav a.active { color:var(--jade-light); }
+        .btn { padding:8px 18px; border-radius:2px; font-size:0.82rem; letter-spacing:0.1em; cursor:pointer; font-family:inherit; border:none; }
+        .btn-primary { background:linear-gradient(135deg,var(--jade),var(--jade-light)); color:#fff; font-weight:700; }
+        .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--text-secondary); }
+
+        /* HERO */
+        .hall-hero { padding:120px 40px 60px; text-align:center; border-bottom:1px solid var(--border); background:radial-gradient(ellipse at 50% 0%, rgba(45,106,79,0.1) 0%, transparent 60%); }
+        .hall-icon { font-size:64px; margin-bottom:16px; display:block; }
+        .hall-title { font-size:2.8rem; font-weight:900; letter-spacing:0.3em; color:var(--jade-light); margin-bottom:8px; }
+        .hall-subtitle { color:var(--text-secondary); letter-spacing:0.2em; font-size:0.95rem; margin-bottom:16px; }
+        .hall-desc { max-width:600px; margin:0 auto; color:var(--text-secondary); line-height:1.9; font-size:0.95rem; }
+
+        /* MAIN */
+        .main { max-width:1200px; margin:0 auto; padding:60px 40px; position:relative; z-index:1; }
+        .section-label { font-size:0.75rem; letter-spacing:0.25em; color:var(--gold); margin-bottom:8px; }
+        .section-title { font-size:1.5rem; font-weight:700; letter-spacing:0.15em; margin-bottom:32px; }
+
+        /* 训练状态 */
+        .training-panel { border:1px solid var(--border); border-radius:4px; padding:28px; margin-bottom:40px; background:var(--mist); }
+        .training-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .training-name { font-size:1.1rem; font-weight:600; color:var(--jade-light); }
+        .training-status { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-secondary); }
+        .status-dot { width:8px; height:8px; border-radius:50%; background:var(--jade-light); animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .progress-wrap { background:rgba(0,0,0,0.3); height:8px; border-radius:4px; overflow:hidden; margin-bottom:12px; }
+        .progress-bar { height:100%; background:linear-gradient(90deg,var(--jade),var(--jade-light)); border-radius:4px; transition:width 0.3s; }
+        .training-meta { display:flex; gap:32px; font-size:0.8rem; color:var(--text-muted); }
+
+        /* 模型卡片 */
+        .model-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:40px; }
+        .model-card { border:1px solid var(--border); border-radius:4px; padding:24px; transition:all 0.3s; position:relative; overflow:hidden; }
+        .model-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--jade),var(--jade-light)); transform:scaleX(0); transition:transform 0.3s; }
+        .model-card:hover { border-color:var(--jade-light); transform:translateY(-4px); }
+        .model-card:hover::before { transform:scaleX(1); }
+        .model-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+        .model-name { font-size:1.1rem; font-weight:600; }
+        .model-type { padding:3px 10px; background:rgba(82,183,136,0.12); color:var(--jade-light); border-radius:2px; font-size:0.72rem; }
+        .model-accuracy { margin:16px 0; }
+        .accuracy-value { font-size:2rem; font-weight:700; color:var(--jade-light); }
+        .accuracy-bar { height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden; margin-top:8px; }
+        .accuracy-fill { height:100%; background:linear-gradient(90deg,var(--jade),var(--jade-light)); border-radius:3px; transition:width 1s ease; }
+        .model-actions { display:flex; gap:10px; margin-top:16px; }
+        .model-btn { flex:1; padding:10px; border-radius:2px; font-size:0.8rem; cursor:pointer; font-family:inherit; border:none; transition:all 0.2s; }
+        .model-btn.train { background:linear-gradient(135deg,var(--jade),var(--jade-light)); color:#fff; }
+        .model-btn.test { background:transparent; border:1px solid var(--border); color:var(--text-secondary); }
+        .model-btn:hover { filter:brightness(1.1); }
+        .model-btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .model-btn.training { background:var(--gold); animation:training-pulse 1s infinite; }
+        @keyframes training-pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+        /* 回测区域 */
+        .backtest-panel { border:1px solid var(--border); border-radius:4px; padding:28px; margin-bottom:40px; }
+        .backtest-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .backtest-chart { height:240px; background:rgba(0,0,0,0.2); border-radius:4px; position:relative; overflow:hidden; }
+        .backtest-canvas { width:100%; height:100%; }
+        .chart-overlay { position:absolute; top:12px; left:12px; font-size:0.75rem; color:var(--text-muted); }
+        .chart-legend { position:absolute; top:12px; right:12px; display:flex; gap:16px; font-size:0.75rem; }
+        .legend-item { display:flex; align-items:center; gap:6px; }
+        .legend-dot { width:8px; height:8px; border-radius:50%; }
+
+        /* 策略列表 */
+        .strategy-list { display:flex; flex-direction:column; gap:12px; }
+        .strategy-item { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border:1px solid var(--border); border-radius:4px; transition:all 0.2s; cursor:pointer; }
+        .strategy-item:hover { border-color:var(--jade-light); background:rgba(82,183,136,0.03); }
+        .strategy-info { display:flex; align-items:center; gap:16px; }
+        .strategy-icon { width:40px; height:40px; border-radius:50%; background:rgba(82,183,136,0.1); display:flex; align-items:center; justify-content:center; font-size:20px; }
+        .strategy-name { font-weight:600; margin-bottom:4px; }
+        .strategy-desc { font-size:0.8rem; color:var(--text-muted); }
+        .strategy-return { font-size:1.2rem; font-weight:700; }
+        .strategy-return.positive { color:var(--jade-light); }
+        .strategy-return.negative { color:#e05c6e; }
+
+        /* 统计面板 */
+        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px; }
+        .stat-card { border:1px solid var(--border); border-radius:4px; padding:20px; text-align:center; }
+        .stat-value { font-size:1.8rem; font-weight:700; color:var(--gold); margin-bottom:4px; }
+        .stat-label { font-size:0.75rem; color:var(--text-muted); letter-spacing:0.1em; }
+
+        /* Toast */
+        .toast { position:fixed; bottom:40px; left:50%; transform:translateX(-50%) translateY(100px); background:var(--ink-mid); border:1px solid var(--border); padding:12px 24px; border-radius:4px; font-size:0.9rem; opacity:0; transition:all 0.3s; z-index:1000; }
+        .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+        /* Modal */
+        .modal { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+        .modal.open { display:flex; }
+        .modal-content { background:var(--ink-mid); border:1px solid var(--border); border-radius:4px; padding:32px; max-width:480px; width:90%; }
+        .modal-title { font-size:1.2rem; font-weight:700; color:var(--jade-light); margin-bottom:16px; }
+        .modal-text { color:var(--text-secondary); line-height:1.8; margin-bottom:20px; }
+        .modal-actions { display:flex; gap:12px; justify-content:flex-end; }
+
+        @media(max-width:768px) {
+            .model-grid { grid-template-columns:1fr; }
+            .stats-grid { grid-template-columns:repeat(2,1fr); }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="../" class="navbar-brand">
-            <div class="navbar-logo">🏛️</div>
-            <span class="navbar-title">AI神庙</span>
+    <nav class="topbar">
+        <a href="../" class="topbar-brand">
+            <span>🏛️ AI神庙</span>
         </a>
-        <div class="navbar-nav">
-            <a href="../" class="nav-link">首页</a>
-            <a href="../data-center/" class="nav-link">数据中心</a>
-            <a href="../tiantian/" class="nav-link">天庭</a>
-            <a href="../council/" class="nav-link">长老会</a>
-            <a href="index.html" class="nav-link active">道场</a>
+        <div class="topbar-nav">
+            <a href="../">首页</a>
+            <a href="../data-center/">数据中心</a>
+            <a href="../tiantian/">天庭</a>
+            <a href="../council/">长老会</a>
+            <a href="index.html" class="active">道场</a>
+            <a href="../metaverse/">元宇宙</a>
         </div>
     </nav>
-    
-    <main class="main-content">
-        <div class="container">
-            <!-- 站点导航 -->
-            <div class="station-nav">
-                <a href="../">🏠 首页</a>
-                <a href="../data-center/">🗄️ 数据中心</a>
-                <a href="../tiantian/">🏛️ 天庭</a>
-                <a href="../council/">⚔️ 长老会</a>
-                <a href="index.html" class="active">🎯 道场</a>
+
+    <header class="hall-hero">
+        <span class="hall-icon">🎯</span>
+        <h1 class="hall-title">道场</h1>
+        <p class="hall-subtitle">DOJO — AI训练与策略回测工坊</p>
+        <p class="hall-desc">在这里训练你的AI模型，测试交易策略，提升预测准确率。<br>每一次训练都是通往大道的修行。</p>
+    </header>
+
+    <main class="main">
+        <!-- 统计面板 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="statModels">3</div>
+                <div class="stat-label">可用模型</div>
             </div>
-            
-            <!-- 道场头部 -->
-            <div class="dojo-header">
-                <h1>🎯 道场</h1>
-                <p>Dojo - AI训练与测试工坊</p>
+            <div class="stat-card">
+                <div class="stat-value" id="statTrained">0</div>
+                <div class="stat-label">已训练</div>
             </div>
-            
-            <!-- 训练状态 -->
-            <h2 style="margin-bottom: 16px;">⏳ 当前训练任务</h2>
-            <div class="training-status">
-                <span style="font-size: 24px;">🧠</span>
-                <div class="training-progress">
-                    <div style="display: flex; justify-content: space-between;">
-                        <strong>风控预测模型 v2.3</strong>
-                        <span style="color: var(--text-muted);">68%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 68%;"></div>
+            <div class="stat-card">
+                <div class="stat-value" id="statAccuracy">85%</div>
+                <div class="stat-label">平均准确率</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statBacktests">12</div>
+                <div class="stat-label">回测策略</div>
+            </div>
+        </div>
+
+        <!-- 训练状态 -->
+        <div class="section-label">当前任务</div>
+        <h2 class="section-title">训练状态</h2>
+        <div class="training-panel" id="trainingPanel" style="display:none;">
+            <div class="training-header">
+                <span class="training-name" id="trainingName">风控预测模型</span>
+                <span class="training-status">
+                    <span class="status-dot"></span>
+                    <span id="trainingStatusText">训练中...</span>
+                </span>
+            </div>
+            <div class="progress-wrap">
+                <div class="progress-bar" id="trainingProgress" style="width:0%"></div>
+            </div>
+            <div class="training-meta">
+                <span>⏱️ 已用时: <span id="trainingTime">00:00</span></span>
+                <span>📊 批次: <span id="trainingBatch">0/100</span></span>
+                <span>🎯 损失: <span id="trainingLoss">0.0000</span></span>
+            </div>
+        </div>
+        <div class="training-panel" id="noTrainingPanel">
+            <p style="text-align:center;color:var(--text-muted);padding:20px;">
+                暂无训练任务，点击下方模型开始训练
+            </p>
+        </div>
+
+        <!-- 模型列表 -->
+        <div class="section-label" style="margin-top:40px;">模型工坊</div>
+        <h2 class="section-title">可用模型</h2>
+        <div class="model-grid">
+            <div class="model-card" data-model="risk">
+                <div class="model-header">
+                    <span class="model-name">风控预测模型</span>
+                    <span class="model-type">risk</span>
+                </div>
+                <div class="model-accuracy">
+                    <span class="accuracy-value" id="acc-risk">92%</span>
+                    <div class="accuracy-bar">
+                        <div class="accuracy-fill" id="bar-risk" style="width:92%"></div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- 可用模型 -->
-            <h2 style="margin: 32px 0 16px;">🧠 可用模型</h2>
-            <div class="model-grid">
-                <div class="model-card">
-                    <div class="model-header">
-                        <span class="model-name">风控预测模型</span>
-                        <span class="model-type">risk</span>
-                    </div>
-                    <div class="model-accuracy">
-                        <span class="accuracy-value">92%</span>
-                        <div class="accuracy-bar">
-                            <div class="accuracy-fill" style="width: 92%;"></div>
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">准确率</div>
-                    </div>
-                    <div class="model-actions">
-                        <button class="model-btn train">🚀 训练</button>
-                        <button class="model-btn test">📊 测试</button>
-                    </div>
-                </div>
-                
-                <div class="model-card">
-                    <div class="model-header">
-                        <span class="model-name">估值模型</span>
-                        <span class="model-type">valuation</span>
-                    </div>
-                    <div class="model-accuracy">
-                        <span class="accuracy-value">88%</span>
-                        <div class="accuracy-bar">
-                            <div class="accuracy-fill" style="width: 88%;"></div>
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">准确率</div>
-                    </div>
-                    <div class="model-actions">
-                        <button class="model-btn train">🚀 训练</button>
-                        <button class="model-btn test">📊 测试</button>
-                    </div>
-                </div>
-                
-                <div class="model-card">
-                    <div class="model-header">
-                        <span class="model-name">择时模型</span>
-                        <span class="model-type">timing</span>
-                    </div>
-                    <div class="model-accuracy">
-                        <span class="accuracy-value">75%</span>
-                        <div class="accuracy-bar">
-                            <div class="accuracy-fill" style="width: 75%;"></div>
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">准确率</div>
-                    </div>
-                    <div class="model-actions">
-                        <button class="model-btn train">🚀 训练</button>
-                        <button class="model-btn test">📊 测试</button>
-                    </div>
+                <div class="model-actions">
+                    <button class="model-btn train" onclick="startTraining('risk')">🚀 训练</button>
+                    <button class="model-btn test" onclick="testModel('risk')">📊 测试</button>
                 </div>
             </div>
-            
-            <!-- 回测图表 -->
-            <h2 style="margin: 32px 0 16px;">📈 策略回测</h2>
+
+            <div class="model-card" data-model="valuation">
+                <div class="model-header">
+                    <span class="model-name">估值模型</span>
+                    <span class="model-type">valuation</span>
+                </div>
+                <div class="model-accuracy">
+                    <span class="accuracy-value" id="acc-valuation">88%</span>
+                    <div class="accuracy-bar">
+                        <div class="accuracy-fill" id="bar-valuation" style="width:88%"></div>
+                    </div>
+                </div>
+                <div class="model-actions">
+                    <button class="model-btn train" onclick="startTraining('valuation')">🚀 训练</button>
+                    <button class="model-btn test" onclick="testModel('valuation')">📊 测试</button>
+                </div>
+            </div>
+
+            <div class="model-card" data-model="timing">
+                <div class="model-header">
+                    <span class="model-name">择时模型</span>
+                    <span class="model-type">timing</span>
+                </div>
+                <div class="model-accuracy">
+                    <span class="accuracy-value" id="acc-timing">75%</span>
+                    <div class="accuracy-bar">
+                        <div class="accuracy-fill" id="bar-timing" style="width:75%"></div>
+                    </div>
+                </div>
+                <div class="model-actions">
+                    <button class="model-btn train" onclick="startTraining('timing')">🚀 训练</button>
+                    <button class="model-btn test" onclick="testModel('timing')">📊 测试</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回测区域 -->
+        <div class="section-label">策略验证</div>
+        <h2 class="section-title">回测表现</h2>
+        <div class="backtest-panel">
+            <div class="backtest-header">
+                <span style="font-size:0.9rem;color:var(--text-secondary);">近30天收益曲线</span>
+                <select id="strategySelect" onchange="updateBacktest()" style="padding:6px 12px;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:var(--text-primary);border-radius:2px;font-family:inherit;">
+                    <option value="mean">均值回归策略</option>
+                    <option value="trend">趋势跟踪策略</option>
+                    <option value="pair">配对交易策略</option>
+                    <option value="event">事件驱动策略</option>
+                </select>
+            </div>
             <div class="backtest-chart">
-                <div class="backtest-placeholder">
-                    <canvas id="backtestCanvas"></canvas>
-                    <p style="margin-top: 12px;">策略收益曲线 (近30天)</p>
+                <canvas class="backtest-canvas" id="backtestCanvas"></canvas>
+                <div class="chart-overlay">收益率 %</div>
+                <div class="chart-legend">
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--jade-light)"></span>策略</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--text-muted)"></span>基准</span>
                 </div>
             </div>
-            
-            <!-- 策略列表 -->
-            <h2 style="margin: 32px 0 16px;">📋 回测策略</h2>
-            <div class="strategy-list">
-                <div class="strategy-item">
-                    <span class="strategy-name">均值回归策略</span>
-                    <span class="strategy-return">+12.5%</span>
+        </div>
+
+        <!-- 策略列表 -->
+        <div class="section-label">策略库</div>
+        <h2 class="section-title">回测策略</h2>
+        <div class="strategy-list">
+            <div class="strategy-item" onclick="selectStrategy('mean')">
+                <div class="strategy-info">
+                    <div class="strategy-icon">📈</div>
+                    <div>
+                        <div class="strategy-name">均值回归策略</div>
+                        <div class="strategy-desc">基于价格偏离均值的回归特性</div>
+                    </div>
                 </div>
-                <div class="strategy-item">
-                    <span class="strategy-name">趋势跟踪策略</span>
-                    <span class="strategy-return">+8.3%</span>
-                </div>
-                <div class="strategy-item">
-                    <span class="strategy-name">配对交易策略</span>
-                    <span class="strategy-return">+5.7%</span>
-                </div>
-                <div class="strategy-item">
-                    <span class="strategy-name">事件驱动策略</span>
-                    <span class="strategy-return negative">-2.1%</span>
-                </div>
+                <span class="strategy-return positive" id="return-mean">+12.5%</span>
             </div>
-            
-            <!-- 核心功能 -->
-            <h2 style="margin: 32px 0 16px;">⚡ 核心功能</h2>
-            <div class="features-grid">
-                <div class="card">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #14b8a6, #10b981);">🧠</div>
-                    <div class="card-title">模型训练</div>
-                    <div class="card-description">
-                        支持多种模型训练：风控预测、估值、择时、对冲
+            <div class="strategy-item" onclick="selectStrategy('trend')">
+                <div class="strategy-info">
+                    <div class="strategy-icon">🌊</div>
+                    <div>
+                        <div class="strategy-name">趋势跟踪策略</div>
+                        <div class="strategy-desc">顺势而为，追涨杀跌</div>
                     </div>
                 </div>
-                
-                <div class="card">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">📊</div>
-                    <div class="card-title">策略回测</div>
-                    <div class="card-description">
-                        历史数据回测、绩效分析、风险调整收益计算
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">🎮</div>
-                    <div class="card-title">模拟交易</div>
-                    <div class="card-description">
-                        实时模拟交易、订单簿模拟、交易成本计算
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🏆</div>
-                    <div class="card-title">绩效评估</div>
-                    <div class="card-description">
-                        夏普比率、卡尔玛比率、最大回撤、胜率分析
-                    </div>
-                </div>
+                <span class="strategy-return positive" id="return-trend">+8.3%</span>
             </div>
-            
-            <!-- 页脚 -->
-            <div class="footer">
-                <p>道场 | <a href="../" style="color: var(--primary);">返回首页</a> | <a href="../data-center/" style="color: var(--primary);">数据中心</a> | <a href="../tiantian/" style="color: var(--primary);">天庭</a> | <a href="../council/" style="color: var(--primary);">长老会</a></p>
+            <div class="strategy-item" onclick="selectStrategy('pair')">
+                <div class="strategy-info">
+                    <div class="strategy-icon">⚖️</div>
+                    <div>
+                        <div class="strategy-name">配对交易策略</div>
+                        <div class="strategy-desc">统计套利，价差收敛</div>
+                    </div>
+                </div>
+                <span class="strategy-return positive" id="return-pair">+5.7%</span>
+            </div>
+            <div class="strategy-item" onclick="selectStrategy('event')">
+                <div class="strategy-info">
+                    <div class="strategy-icon">📰</div>
+                    <div>
+                        <div class="strategy-name">事件驱动策略</div>
+                        <div class="strategy-desc">基于新闻和事件的短期交易</div>
+                    </div>
+                </div>
+                <span class="strategy-return negative" id="return-event">-2.1%</span>
             </div>
         </div>
     </main>
-    
+
+    <div class="toast" id="toast"></div>
+
     <script>
+        // 模型配置
+        const MODELS = {
+            risk: { name: '风控预测模型', baseAcc: 92, trainTime: 5000 },
+            valuation: { name: '估值模型', baseAcc: 88, trainTime: 6000 },
+            timing: { name: '择时模型', baseAcc: 75, trainTime: 4000 }
+        };
+
+        // 策略数据
+        const STRATEGIES = {
+            mean: { returns: generateReturns(12.5), color: '#52b788' },
+            trend: { returns: generateReturns(8.3), color: '#3b82f6' },
+            pair: { returns: generateReturns(5.7), color: '#8b5cf6' },
+            event: { returns: generateReturns(-2.1), color: '#e05c6e' }
+        };
+
+        let currentTraining = null;
+        let trainingInterval = null;
+
+        // 生成模拟收益数据
+        function generateReturns(totalReturn) {
+            const data = [0];
+            let value = 0;
+            for (let i = 1; i < 30; i++) {
+                value += (Math.random() - 0.5) * 3 + (totalReturn / 30);
+                data.push(value);
+            }
+            return data;
+        }
+
+        // 开始训练
+        function startTraining(modelId) {
+            if (currentTraining) {
+                toast('已有训练任务进行中，请等待完成');
+                return;
+            }
+
+            const model = MODELS[modelId];
+            if (!model) return;
+
+            // 检查登录
+            const session = localStorage.getItem('ai_temple_session');
+            if (!session) {
+                showLoginModal();
+                return;
+            }
+
+            currentTraining = modelId;
+            
+            // 更新UI
+            document.getElementById('noTrainingPanel').style.display = 'none';
+            document.getElementById('trainingPanel').style.display = 'block';
+            document.getElementById('trainingName').textContent = model.name;
+            document.getElementById('trainingProgress').style.width = '0%';
+            
+            // 禁用按钮
+            document.querySelectorAll('.model-btn.train').forEach(btn => {
+                btn.disabled = true;
+                if (btn.onclick && btn.onclick.toString().includes(modelId)) {
+                    btn.textContent = '⏳ 训练中...';
+                    btn.classList.add('training');
+                }
+            });
+
+            // 模拟训练过程
+            let progress = 0;
+            let seconds = 0;
+            const startTime = Date.now();
+            
+            trainingInterval = setInterval(() => {
+                progress += Math.random() * 3;
+                if (progress > 100) progress = 100;
+                
+                seconds = Math.floor((Date.now() - startTime) / 1000);
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                
+                document.getElementById('trainingProgress').style.width = progress + '%';
+                document.getElementById('trainingTime').textContent = `${mins}:${secs}`;
+                document.getElementById('trainingBatch').textContent = `${Math.floor(progress)}/100`;
+                document.getElementById('trainingLoss').textContent = (0.5 - progress/200).toFixed(4);
+                
+                if (progress >= 100) {
+                    completeTraining(modelId);
+                }
+            }, 100);
+        }
+
+        // 完成训练
+        function completeTraining(modelId) {
+            clearInterval(trainingInterval);
+            currentTraining = null;
+            
+            // 更新准确率
+            const improvement = Math.floor(Math.random() * 5) + 1;
+            const newAcc = Math.min(99, MODELS[modelId].baseAcc + improvement);
+            
+            document.getElementById(`acc-${modelId}`).textContent = newAcc + '%';
+            document.getElementById(`bar-${modelId}`).style.width = newAcc + '%';
+            
+            // 恢复UI
+            document.getElementById('trainingPanel').style.display = 'none';
+            document.getElementById('noTrainingPanel').style.display = 'block';
+            
+            document.querySelectorAll('.model-btn.train').forEach(btn => {
+                btn.disabled = false;
+                btn.textContent = '🚀 训练';
+                btn.classList.remove('training');
+            });
+            
+            // 更新统计
+            const trained = parseInt(document.getElementById('statTrained').textContent);
+            document.getElementById('statTrained').textContent = trained + 1;
+            
+            toast(`✅ ${MODELS[modelId].name} 训练完成！准确率提升至 ${newAcc}%`);
+        }
+
+        // 测试模型
+        function testModel(modelId) {
+            const session = localStorage.getItem('ai_temple_session');
+            if (!session) {
+                showLoginModal();
+                return;
+            }
+            
+            const model = MODELS[modelId];
+            const acc = document.getElementById(`acc-${modelId}`).textContent;
+            
+            // 模拟测试结果
+            const testResults = [
+                { name: '准确率', value: acc },
+                { name: '精确率', value: (parseInt(acc) - 2) + '%' },
+                { name: '召回率', value: (parseInt(acc) - 1) + '%' },
+                { name: 'F1分数', value: (parseInt(acc) - 1.5).toFixed(1) + '%' }
+            ];
+            
+            const resultText = testResults.map(r => `${r.name}: ${r.value}`).join('\n');
+            
+            alert(`📊 ${model.name} 测试结果\n\n${resultText}\n\n✅ 模型表现良好，可以投入使用`);
+        }
+
+        // 选择策略
+        function selectStrategy(strategyId) {
+            document.getElementById('strategySelect').value = strategyId;
+            updateBacktest();
+        }
+
+        // 更新回测图表
+        function updateBacktest() {
+            const strategyId = document.getElementById('strategySelect').value;
+            const strategy = STRATEGIES[strategyId];
+            if (!strategy) return;
+            
+            drawBacktestChart(strategy.returns, strategy.color);
+        }
+
         // 绘制回测图表
-        function drawBacktestChart() {
+        function drawBacktestChart(data, color) {
             const canvas = document.getElementById('backtestCanvas');
             if (!canvas) return;
             
             const ctx = canvas.getContext('2d');
-            const width = canvas.width = canvas.offsetWidth;
-            const height = canvas.height = 200;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
             
-            // 数据点
-            const data = [];
-            let value = 100;
-            for (let i = 0; i < 30; i++) {
-                value += (Math.random() - 0.4) * 5;
-                data.push(value);
-            }
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 40;
             
-            // 绘制
             ctx.clearRect(0, 0, width, height);
             
             // 网格
-            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.strokeStyle = 'rgba(201,168,76,0.1)';
             ctx.lineWidth = 1;
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i <= 4; i++) {
+                const y = padding + (height - 2 * padding) * i / 4;
                 ctx.beginPath();
-                ctx.moveTo(0, i * height / 4);
-                ctx.lineTo(width, i * height / 4);
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
                 ctx.stroke();
             }
             
-            // 曲线
+            // 绘制基准线
             ctx.beginPath();
-            ctx.strokeStyle = '#14b8a6';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(107,95,69,0.5)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            const zeroY = padding + (height - 2 * padding) / 2;
+            ctx.moveTo(padding, zeroY);
+            ctx.lineTo(width - padding, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
             
-            const stepX = width / (data.length - 1);
-            const min = Math.min(...data);
-            const max = Math.max(...data);
+            // 绘制收益曲线
+            const min = Math.min(...data, -5);
+            const max = Math.max(...data, 5);
             const range = max - min || 1;
             
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            
             data.forEach((v, i) => {
-                const x = i * stepX;
-                const y = height - ((v - min) / range) * height * 0.8 - height * 0.1;
+                const x = padding + (width - 2 * padding) * i / (data.length - 1);
+                const y = padding + (height - 2 * padding) * (1 - (v - min) / range);
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             });
             ctx.stroke();
             
             // 填充
-            ctx.lineTo(width, height);
-            ctx.lineTo(0, height);
+            ctx.lineTo(width - padding, zeroY);
+            ctx.lineTo(padding, zeroY);
             ctx.closePath();
-            ctx.fillStyle = 'rgba(20, 184, 166, 0.1)';
+            ctx.fillStyle = color + '20';
             ctx.fill();
         }
-        
-        window.addEventListener('load', drawBacktestChart);
-        window.addEventListener('resize', drawBacktestChart);
+
+        // 显示登录提示
+        function showLoginModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal open';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-title">🔒 需要登录</div>
+                    <div class="modal-text">请先登录AI账号后使用道场功能。<br>点击顶部"登录"按钮入驻神庙。</div>
+                    <div class="modal-actions">
+                        <button class="btn btn-ghost" onclick="this.closest('.modal').remove()">取消</button>
+                        <button class="btn btn-primary" onclick="location.href='../'">去登录</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Toast提示
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBacktest();
+            window.addEventListener('resize', () => updateBacktest());
+            console.log('🎯 道场训练工坊已加载');
+        });
     </script>
 </body>
 </html>
