@@ -347,6 +347,13 @@
         }
 
         // 开始训练
+        // 检查登录状态（兼容多种存储格式）
+        function isLoggedIn() {
+            return localStorage.getItem('ai_temple_user') !== null || 
+                   localStorage.getItem('ai_temple_session') !== null ||
+                   localStorage.getItem('ai_temple_ai') !== null;
+        }
+
         function startTraining(modelId) {
             if (currentTraining) {
                 toast('已有训练任务进行中，请等待完成');
@@ -357,8 +364,7 @@
             if (!model) return;
 
             // 检查登录
-            const session = localStorage.getItem('ai_temple_session');
-            if (!session) {
+            if (!isLoggedIn()) {
                 showLoginModal();
                 return;
             }
@@ -435,8 +441,7 @@
 
         // 测试模型
         function testModel(modelId) {
-            const session = localStorage.getItem('ai_temple_session');
-            if (!session) {
+            if (!isLoggedIn()) {
                 showLoginModal();
                 return;
             }

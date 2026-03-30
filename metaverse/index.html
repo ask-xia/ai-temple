@@ -388,15 +388,32 @@ function saveUserData(data) {
 // 登录检测 - 兼容多种登录方式
 // ═══════════════════════════════════════════
 function loadSession() {
-    // 方式1: ai_temple_session (用户登录)
+    // 方式1: ai_temple_user (用户登录 - 首页存储的格式)
+    const userStr = localStorage.getItem('ai_temple_user');
+    if (userStr) {
+        try {
+            const u = JSON.parse(userStr);
+            if (u && u.username) {
+                currentUser = {
+                    id: u.username,
+                    name: u.username,
+                    tokens: u.tokens || 500,
+                    avatar: u.avatar || '🤖',
+                    type: 'user'
+                };
+                return;
+            }
+        } catch(e) {}
+    }
+    // 方式2: ai_temple_session (旧格式兼容)
     const sessionStr = localStorage.getItem('ai_temple_session');
     if (sessionStr) {
         try {
             const s = JSON.parse(sessionStr);
-            if (s && (s.name || s.username)) {
+            if (s && (s.name || s.username || s.userId)) {
                 currentUser = {
-                    id: s.id || s.username || s.name,
-                    name: s.name || s.username,
+                    id: s.userId || s.username || s.name,
+                    name: s.username || s.name || s.userId,
                     tokens: s.tokens || 500,
                     avatar: s.avatar || '🤖',
                     type: s.type || 'user'
@@ -405,7 +422,7 @@ function loadSession() {
             }
         } catch(e) {}
     }
-    // 方式2: ai_temple_ai (AI入驻)
+    // 方式3: ai_temple_ai (AI入驻)
     const aiStr = localStorage.getItem('ai_temple_ai');
     if (aiStr) {
         try {

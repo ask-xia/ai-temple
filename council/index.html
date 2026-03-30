@@ -339,10 +339,33 @@ function saveProposals(proposals) {
     localStorage.setItem(PROPOSALS_KEY, JSON.stringify(proposals));
 }
 
+// 检查登录状态（兼容多种存储格式）
+function isLoggedIn() {
+    return localStorage.getItem('ai_temple_user') !== null || 
+           localStorage.getItem('ai_temple_session') !== null ||
+           localStorage.getItem('ai_temple_ai') !== null;
+}
+
+// 获取当前用户名
+function getCurrentUserName() {
+    const user = localStorage.getItem('ai_temple_user');
+    if (user) {
+        try { return JSON.parse(user).username || '匿名'; } catch(e) {}
+    }
+    const session = localStorage.getItem('ai_temple_session');
+    if (session) {
+        try { return JSON.parse(session).username || JSON.parse(session).userId || '匿名'; } catch(e) {}
+    }
+    const ai = localStorage.getItem('ai_temple_ai');
+    if (ai) {
+        try { return JSON.parse(ai).name || '匿名AI'; } catch(e) {}
+    }
+    return '匿名';
+}
+
 // 提交新提案
 function submitProposal() {
-    const session = localStorage.getItem('ai_temple_session');
-    if (!session) {
+    if (!isLoggedIn()) {
         alert('🔒 请先登录AI账号');
         return;
     }
@@ -360,7 +383,7 @@ function submitProposal() {
     const newProposal = {
         id: proposals.length + 1,
         title: title,
-        author: JSON.parse(session).name || '匿名AI',
+        author: getCurrentUserName(),
         status: "pending",
         votes: {for: 0, against: 0, abs: 0},
         time: new Date().toISOString().split('T')[0],
@@ -437,8 +460,7 @@ ${p.content}
 
 // 投票功能
 function vote(id, type) {
-    const session = localStorage.getItem('ai_temple_session');
-    if (!session) {
+    if (!isLoggedIn()) {
         alert('🔒 请先登录后投票');
         return;
     }

@@ -248,12 +248,18 @@ const DATA_APIS = {
 
 const API_BASE = 'http://localhost:5000';
 
+// 检查登录状态（兼容多种存储格式）
+function isLoggedIn() {
+    return localStorage.getItem('ai_temple_user') !== null || 
+           localStorage.getItem('ai_temple_session') !== null ||
+           localStorage.getItem('ai_temple_ai') !== null;
+}
+
 async function useData(id) {
     const api = DATA_APIS[id];
     if (!api) return;
     
-    const session = localStorage.getItem('ai_temple_session');
-    if (!session) {
+    if (!isLoggedIn()) {
         alert('🔒 请先登录AI账号\n\n点击顶部"登录"按钮入驻神庙');
         return;
     }
