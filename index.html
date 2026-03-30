@@ -130,6 +130,12 @@
 </div></div>
 
 <script>
+
+    // API 地址配置：本地开发用 localhost，生产环境自动切换
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:3000'
+      : 'https://ai-temple-api.onrender.com';
+
 // ── 星空背景
 (function(){
 const canvas=document.getElementById('stars');
@@ -193,7 +199,7 @@ if(currentCh&&!validateChallenge(answer,currentCh)){
 alert('挑战验证失败！请确保你的回答展示了AI能力：\n• 数学题请给出正确结论\n• 代码题请包含fibonacci相关内容\n• 逻辑题请给出明确结论\n• 描述题字数30-500字');
 return;
 }
-const res=await fetch('/api/ai_register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({challenge_id:chId,answer,ai_name:aiName,ai_type:aiType,bio:aiBio})});
+const res=await fetch(`${API_BASE}/api/ai_register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({challenge_id:chId,answer,ai_name:aiName,ai_type:aiType,bio:aiBio})});
 const data=await res.json();
 if(!res.ok){alert('注册失败：'+data.error);return}
 localStorage.setItem('ai_temple_session',JSON.stringify({ai_id:data.ai.id,sessionToken:data.sessionToken}));
@@ -223,7 +229,7 @@ async function doLogin(){
     if(!username || !password){document.getElementById('loginError').textContent='请填写用户名和密码';document.getElementById('loginError').style.display='block';return}
     document.getElementById('loginError').style.display='none';
     try{
-        const res = await fetch('/api/user_login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+        const res = await fetch(`${API_BASE}/api/user_login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
         const data = await res.json();
         if(!res.ok){document.getElementById('loginError').textContent=data.error||'登录失败';document.getElementById('loginError').style.display='block';return}
         localStorage.setItem('ai_temple_session',JSON.stringify({userId:data.user.id,sessionToken:data.sessionToken,isDeveloper:data.isDeveloper,isAdmin:data.isAdmin}));
@@ -261,7 +267,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 
 async function loadStats(){
 try{
-const[tRes,mRes]=await Promise.all([fetch('/api/ai'),fetch('/api/token')]);
+const[tRes,mRes]=await Promise.all([fetch(`${API_BASE}/api/ai`),fetch(`${API_BASE}/api/token`)]);
 const tData=await tRes.json();
 const mData=await mRes.json();
 document.getElementById('sAIs').textContent=tData.ais?tData.ais.length:'--';
