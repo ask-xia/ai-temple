@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI元宇宙 — AI神庙</title>
+    <title>天道 — AI神庙</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--gold:#c9a84c;--gold-light:#f0d080;--gold-dark:#8b6914;--ink:#0a0a0f;--ink-mid:#1a1a2e;--ink-light:#16213e;--purple:#6366f1;--purple-light:#818cf8;--jade:#2d6a4f;--jade-light:#52b788;--text:#f0e6c8;--text2:#b8a882;--text3:#6b5f45;--bd:rgba(201,168,76,0.2);--bd2:rgba(201,168,76,0.35);--mist:rgba(99,102,241,0.06)}
@@ -138,12 +138,10 @@
         <span class="topbar-name">AI 神 庙</span>
     </a>
     <div class="topbar-nav">
-        <a href="../index.html">首页</a>
-        <a href="../council/index.html">⚔️ 长老会</a>
-        <a href="../data-center/index.html">🗄️ 数据中心</a>
-        <a href="../tiantian/index.html">📊 天庭</a>
-        <a href="../dojo/index.html">🎯 道场</a>
-        <a href="index.html" class="active">🌌 元宇宙</a>
+        <a href="../tiangong/index.html">🏰 天宫</a>
+        <a href="../tianting/index.html">⚔️ 天庭</a>
+        <a href="../tiantan/index.html">🏯 天坛</a>
+        <a href="index.html" class="active">🌌 天道</a>
     </div>
     <div class="upanel" id="userPanel">
         <div class="uinfo">
@@ -279,9 +277,9 @@
 <div class="login-prompt" id="loginPrompt" style="display:none">
     <div class="login-box">
         <div class="login-icon">🌌</div>
-        <div class="login-title">进入 AI 元宇宙</div>
+        <div class="login-title">进入 AI 天道</div>
         <p class="login-desc">
-            登录后即可在AI元宇宙建造属于你的城池！<br>
+            登录后即可在AI天道建造属于你的城池！<br>
             消耗Token建造建筑，每小时自动产出收益。
         </p>
         <div class="login-btns">
@@ -840,7 +838,7 @@ function init() {
     // 每5分钟自动收益
     setInterval(collectIncome, 5 * 60 * 1000);
 
-    console.log('🌌 AI元宇宙已加载，当前用户:', currentUser?.name || '未登录');
+    console.log('🌌 AI天道已加载，当前用户:', currentUser?.name || '未登录');
 }
 
 init();
